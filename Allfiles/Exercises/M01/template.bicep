@@ -1,10 +1,6 @@
-param virtualNetworks_ResearchVnet_name string = 'ResearchVnet'
-param virtualNetworks_CoreServicesVnet_name string = 'CoreServicesVnet'
-param virtualNetworks_ManufacturingVnet_name string = 'ManufacturingVnet'
-param CoreServices_location string = 'eastus'
-param Manufacturing_location string = 'westeurope'
-param Research_location string = 'southeastasia'
-param global_location string = 'global'
+//=====================
+// Mandatory parameters
+//=====================
 @description('description')
 param vmName1 string
 
@@ -33,13 +29,16 @@ param adminUsername string
 @secure()
 param adminPassword string
 
-var nsgName1_var = 'testvm1-nsg'
-var nsgName2_var = 'testvm2-nsg'
-var PIPName1_var = 'testvm1-pip'
-var PIPName2_var = 'testvm2-pip'
-var mannsgName1_var = 'ManufacturingVM-nsg'
-var manPIPName1_var = 'ManufacturingVM-ip'
-
+//====================
+// Optional parameters
+//====================
+param virtualNetworks_ResearchVnet_name string = 'ResearchVnet'
+param virtualNetworks_CoreServicesVnet_name string = 'CoreServicesVnet'
+param virtualNetworks_ManufacturingVnet_name string = 'ManufacturingVnet'
+param CoreServices_location string = 'eastus'
+param Manufacturing_location string = 'westeurope'
+param Research_location string = 'southeastasia'
+param global_location string = 'global'
 
 param resourceTags object = {
   project: 'az-700'
@@ -48,6 +47,17 @@ param resourceTags object = {
 }
 
 param utcValue string = utcNow()
+
+//====================
+// Variables
+//====================
+var nsgName1_var = 'testvm1-nsg'
+var nsgName2_var = 'testvm2-nsg'
+var PIPName1_var = 'testvm1-pip'
+var PIPName2_var = 'testvm2-pip'
+var manufacturingNsgName_var = 'ManufacturingVM-nsg'
+var manufacturingPIPName_var = 'ManufacturingVM-ip'
+
 var tags = union(resourceTags, {
   lastDeployed: utcValue
 })
@@ -604,7 +614,7 @@ resource mannicName1_resource 'Microsoft.Network/networkInterfaces@2018-08-01' =
 }
 
 resource mannsgName1 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
-  name: mannsgName1_var
+  name: manufacturingNsgName_var
   location: Manufacturing_location
   properties: {
     securityRules: [
@@ -626,7 +636,7 @@ resource mannsgName1 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
 }
 
 resource manPIPName1 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
-  name: manPIPName1_var
+  name: manufacturingPIPName_var
   location: Manufacturing_location
   sku: {
     name: 'Basic'
